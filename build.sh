@@ -1,0 +1,1 @@
+docker build . -t pagdot/nginx-reverse-mod:latest
