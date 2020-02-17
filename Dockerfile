@@ -2,6 +2,7 @@ FROM linuxserver/letsencrypt:latest as tmp
 
 FROM scratch as prepare
 
+COPY 25-config-reverse /etc/cont-init.d/
 COPY --from=tmp /defaults/default /defaults/default
 COPY --from=tmp /defaults/ldap.conf /defaults/ldap.conf
 COPY --from=tmp /defaults/nginx.conf /defaults/nginx.conf

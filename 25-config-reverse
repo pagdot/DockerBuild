@@ -1,0 +1,24 @@
+#!/usr/bin/with-contenv bash
+
+# copy reverse proxy configs
+cp -R /defaults/proxy-confs /config/nginx/
+
+# copy proxy defaults if needed
+[[ ! -f /config/nginx/proxy.conf ]] && \
+	cp /defaults/proxy.conf /config/nginx/proxy.conf
+[[ ! -f /config/nginx/ssl.conf ]] && \
+	cp /defaults/ssl.conf /config/nginx/ssl.conf
+[[ ! -f /config/nginx/ldap.conf ]] && \
+	cp /defaults/ldap.conf /config/nginx/ldap.conf
+
+if [ ! -f "/config/nginx/dhparams.pem" ]; then
+  echo "Creating DH parameters for additional security. This may take a very long time. There will be another message once this process is completed"
+  openssl dhparam -out /config/nginx/dhparams.pem "$DHLEVEL"
+  echo "DH parameters successfully created - $DHLEVEL bits"
+else
+  echo "$ORIGDHLEVEL bit DH parameters present"
+fi
+
+# permissions
+chown -R abc:abc \
+	/config
