@@ -5,11 +5,11 @@ cp -R /defaults/proxy-confs /config/nginx/
 
 # copy proxy defaults if needed
 [[ ! -f /config/nginx/proxy.conf ]] && \
-	cp /defaults/proxy.conf /config/nginx/proxy.conf
+  cp /defaults/proxy.conf /config/nginx/proxy.conf
 [[ ! -f /config/nginx/ssl.conf ]] && \
-	cp /defaults/ssl.conf /config/nginx/ssl.conf
+  cp /defaults/ssl.conf /config/nginx/ssl.conf
 [[ ! -f /config/nginx/ldap.conf ]] && \
-	cp /defaults/ldap.conf /config/nginx/ldap.conf
+  cp /defaults/ldap.conf /config/nginx/ldap.conf
 
 if [ ! -f "/config/nginx/dhparams.pem" ]; then
   echo "Creating DH parameters for additional security. This may take a very long time. There will be another message once this process is completed"
@@ -19,6 +19,10 @@ else
   echo "$ORIGDHLEVEL bit DH parameters present"
 fi
 
+# if domain is set create symlink for certificate
+[[ ! -z ${DOMAIN:+x} ]] && \
+  ln -s ../etc/letsencrypt/live/"$DOMAIN" /config/keys/letsencrypt
+
 # permissions
 chown -R abc:abc \
-	/config
+  /config
