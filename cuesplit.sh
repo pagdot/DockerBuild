@@ -22,6 +22,58 @@ fi
 
 absOut=$(readlink -f "${OUTPUT}")
 
+function _cuesplit {
+    if [ -f "$1.ape" ]
+    then
+        mkdir -p "$2"
+        shnsplit -d "$2" -f "$1.cue" -o "flac flac -V --best -o %f -" "$1.ape" -t "%n %p - %t"
+        rm -f "$2/00*pregap*"
+        cuetag.sh "$1.cue" "$2/*.flac"
+
+    elif [ -f "$1.flac" ]
+    then
+        mkdir -p "$2"
+        shnsplit -d "$2" -f "$1.cue" -o "flac flac -V --best -o %f -" "$1.flac" -t "%n %p - %t"
+        rm -f "$2/00*pregap*"
+        cuetag.sh "$1.cue" "$2/*.flac"
+
+    elif [ -f "$1.mp3" ]
+    then
+        mp3splt -no "@n @p - @t" -c "$1.cue" -d "$2" "$1.mp3"
+        cuetag.sh "$1.cue" "$2/*.mp3"
+
+    elif [ -f "$1.ogg" ]
+    then
+        mp3splt -no "@n @p - @t" -c "$1.cue" -d "$2" "$1.ogg"
+        cuetag.sh "$1.cue" "$2/*.ogg"
+
+    elif [ -f "$1.tta" ]
+    then
+        mkdir -p "$2"
+        shnsplit -d "$2" -f "$1.cue" -o "flac flac -V --best -o %f -" "$1.tta" -t "%n %p - %t"
+        rm -f "$2/00*pregap*"
+        cuetag.sh "$1.cue" "$2/*.flac"
+
+    elif [ -f "$1.wv" ]
+    then
+        mkdir -p "$2"
+        shnsplit -d "$2" -f "$1.cue" -o "flac flac -V --best -o %f -" "$1.wv" -t "%n %p - %t"
+        rm -f "$2/00*pregap*"
+        cuetag.sh "$1.cue" "$2/*.flac"
+
+    elif [ -f "$1.wav" ]
+    then
+        mkdir -p "$2"
+        shnsplit -d "$2" -f "$1.cue" -o "flac flac -V --best -o %f -" "$1.wav" -t "%n %p - %t"
+        rm -f "$2/00*pregap*"
+        cuetag.sh "$1.cue" "$2/*.flac"
+
+    else
+        echo "Error: Found no files to split!"
+        echo "       --> APE, FLAC, MP3, OGG, TTA, WV, WAV"
+    fi
+}
+
 pushd "${INPUT}"
 while IFS= read -r -d '' -u 9
 do
@@ -29,60 +81,8 @@ do
    prefix=$(echo "${REPLY%.*}")
    echo "$prefix.[ape|flac|mp3|ogg|tta|wv|wav]"
    echo --\> $OUTPUT/$subdir
-   split "$prefix" "$absOut/$subdir"
+   _cuesplit "$prefix" "$absOut/$subdir"
 done 9< <( find "." -type f -name "*.cue" -exec printf '%s\0' {} + )
 popd
-
-function split {
-    if [ -f "${prefix}.ape" ]
-    then
-        mkdir "$2"
-        shnsplit -d "$2" -f "${prefix}.cue" -o "flac flac -V --best -o %f -" "${prefix}.ape" -t "%n %p - %t"
-        rm -f "$2/00*pregap*"
-        cuetag.sh "${prefix}.cue" "$2/*.flac"
-
-    elif [ -f "${prefix}.flac" ]
-    then
-        mkdir "$2"
-        shnsplit -d "$2" -f "${prefix}.cue" -o "flac flac -V --best -o %f -" "${prefix}.flac" -t "%n %p - %t"
-        rm -f "$2/00*pregap*"
-        cuetag.sh "${prefix}.cue" "$2/*.flac"
-
-    elif [ -f "${prefix}.mp3" ]
-    then
-        mp3splt -no "@n @p - @t ($2)" -c "${prefix}.cue" -d "$2" "${prefix}.mp3"
-        cuetag.sh "${prefix}.cue" "$2/*.mp3"
-
-    elif [ -f "${prefix}.ogg" ]
-    then
-        mp3splt -no "@n @p - @t (split)" -c "${prefix}.cue" -d "$2" "${prefix}.ogg"
-        cuetag.sh "${prefix}.cue" "$2/*.ogg"
-
-    elif [ -f "${prefix}.tta" ]
-    then
-        mkdir "$2"
-        shnsplit -d "$2" -f "${prefix}.cue" -o "flac flac -V --best -o %f -" "${prefix}.tta" -t "%n %p - %t"
-        rm -f "$2/00*pregap*"
-        cuetag.sh "${prefix}.cue" "$2/*.flac"
-
-    elif [ -f "${prefix}.wv" ]
-    then
-        mkdir "$2"
-        shnsplit -d "$2" -f "${prefix}.cue" -o "flac flac -V --best -o %f -" "${prefix}.wv" -t "%n %p - %t"
-        rm -f "$2/00*pregap*"
-        cuetag.sh "${prefix}.cue" "$2/*.flac"
-
-    elif [ -f "${prefix}.wav" ]
-    then
-        mkdir "$2"
-        shnsplit -d "$2" -f "${prefix}.cue" -o "flac flac -V --best -o %f -" "${prefix}.wav" -t "%n %p - %t"
-        rm -f "$2/00*pregap*"
-        cuetag.sh "${prefix}.cue" "$2/*.flac"
-
-    else
-        echo "Error: Found no files to split!"
-        echo "       --> APE, FLAC, MP3, OGG, TTA, WV, WAV"
-    fi
-}
 
 exit
