@@ -36,14 +36,14 @@ popd
 function split {
     if [ -f "${prefix}.ape" ]
     then
-        mkdir split
+        mkdir "$2"
         shnsplit -d "$2" -f "${prefix}.cue" -o "flac flac -V --best -o %f -" "${prefix}.ape" -t "%n %p - %t"
         rm -f "$2/00*pregap*"
         cuetag.sh "${prefix}.cue" "$2/*.flac"
 
     elif [ -f "${prefix}.flac" ]
     then
-        mkdir split
+        mkdir "$2"
         shnsplit -d "$2" -f "${prefix}.cue" -o "flac flac -V --best -o %f -" "${prefix}.flac" -t "%n %p - %t"
         rm -f "$2/00*pregap*"
         cuetag.sh "${prefix}.cue" "$2/*.flac"
@@ -60,21 +60,21 @@ function split {
 
     elif [ -f "${prefix}.tta" ]
     then
-        mkdir split
+        mkdir "$2"
         shnsplit -d "$2" -f "${prefix}.cue" -o "flac flac -V --best -o %f -" "${prefix}.tta" -t "%n %p - %t"
         rm -f "$2/00*pregap*"
         cuetag.sh "${prefix}.cue" "$2/*.flac"
 
     elif [ -f "${prefix}.wv" ]
     then
-        mkdir split
+        mkdir "$2"
         shnsplit -d "$2" -f "${prefix}.cue" -o "flac flac -V --best -o %f -" "${prefix}.wv" -t "%n %p - %t"
         rm -f "$2/00*pregap*"
         cuetag.sh "${prefix}.cue" "$2/*.flac"
 
     elif [ -f "${prefix}.wav" ]
     then
-        mkdir split
+        mkdir "$2"
         shnsplit -d "$2" -f "${prefix}.cue" -o "flac flac -V --best -o %f -" "${prefix}.wav" -t "%n %p - %t"
         rm -f "$2/00*pregap*"
         cuetag.sh "${prefix}.cue" "$2/*.flac"
