@@ -1,5 +1,34 @@
 #!/usr/bin/with-contenv bash
 
+# Display variables for troubleshooting
+echo -e "Variables set:\\n\
+PUID=${PUID}\\n\
+PGID=${PGID}\\n\
+TZ=${TZ}\\n\
+DOMAIN=${DOMAIN}\\n\
+DHLEVEL=${DHLEVEL}\\n"
+
+# Echo init finish for test runs
+if [ -n "${TEST_RUN}" ]; then
+	echo '[services.d] done.'
+fi
+
+
+# Sanitize variables
+SANED_VARS=( DHLEVEL DOMAIN )
+for i in "${SANED_VARS[@]}"
+do
+  export echo "$i"="${!i//\"/}"
+  export echo "$i"="$(echo "${!i}" | tr '[:upper:]' '[:lower:]')"
+done
+
+# make our folders and links
+mkdir -p \
+	/config/{etc/letsencrypt,fail2ban,crontabs,dns-conf,geoip2db} \
+	/var/run/fail2ban
+rm -rf /etc/letsencrypt
+ln -s /config/etc/letsencrypt /etc/letsencrypt
+
 # copy reverse proxy configs
 cp -R /defaults/proxy-confs /config/nginx/
 
@@ -11,6 +40,22 @@ cp -R /defaults/proxy-confs /config/nginx/
 [[ ! -f /config/nginx/ldap.conf ]] && \
   cp /defaults/ldap.conf /config/nginx/ldap.conf
 
+# create original config file if it doesn't exist
+if [ ! -f "/config/donoteditthisfile.conf" ]; then
+  echo -e "ORIGDHLEVEL=\"$DHLEVEL\" ORIGDOMAIN=\"$DOMAIN\"" > /config/donoteditthisfile.conf
+  echo "Created donoteditthisfile.conf"
+fi
+
+# load original config settings
+# shellcheck disable=SC1091
+. /config/donoteditthisfile.conf
+
+# compare dhparams existence and level, create if necessary
+if [ ! "$DHLEVEL" = "$ORIGDHLEVEL" ]; then
+  rm -rf /config/nginx/dhparams.pem
+  echo "DH parameters bit setting changed. Deleting old dhparams file."
+fi
+
 if [ ! -f "/config/nginx/dhparams.pem" ]; then
   echo "Creating DH parameters for additional security. This may take a very long time. There will be another message once this process is completed"
   openssl dhparam -out /config/nginx/dhparams.pem "$DHLEVEL"
@@ -20,7 +65,7 @@ else
 fi
 
 # if domain is set create symlink for certificate
-[[ ! -z ${DOMAIN:+x} ]] && \
+[[ ! -z $DOMAIN ]] && \
   ln -s ../etc/letsencrypt/live/"$DOMAIN" /config/keys/letsencrypt
 
 # permissions
