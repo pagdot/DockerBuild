@@ -17,8 +17,6 @@ RUN apk --no-cache add ca-certificates fuse
 COPY --from=builder /go/rclone/rclone /usr/local/bin/
 COPY root/ /
 
-ENTRYPOINT [ "rclone" ]
-
 VOLUME /config
 
 WORKDIR /data
