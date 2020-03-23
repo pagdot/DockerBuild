@@ -1,5 +1,8 @@
 #!/usr/bin/with-contenv bash
 
+# Set to default if not set
+DHLEVEL=${DHLEVEL:-2048}
+
 # Display variables for troubleshooting
 echo -e "Variables set:\\n\
 PUID=${PUID}\\n\
