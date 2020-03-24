@@ -1,5 +1,17 @@
 #!/usr/bin/with-contenv bash
 
+# Display variables for troubleshooting
+echo -e "Variables set:\\n\
+PUID=${PUID}\\n\
+PGID=${PGID}\\n\
+TZ=${TZ}\\n\
+RCLONE_CMD=${URL}\\n"
+
+# check to make sure that the required variables are set
+[[ -z "$RCLONE_CMD" ]] && \
+  echo "Please pass your RCLONE_CMD as an environment variable in your docker run command. See docker info for more details." && \
+  sleep infinity
+
 # permissions
 chown -R abc:abc \
 	/config
