@@ -2,10 +2,8 @@
 
 # Display variables for troubleshooting
 echo -e "Variables set:\\n\
-PUID=${PUID}\\n\
-PGID=${PGID}\\n\
 TZ=${TZ}\\n\
-RCLONE_CMD=${URL}\\n"
+RCLONE_CMD=${RCLONE_CMD}\\n"
 
 # check to make sure that the required variables are set
 [[ -z "$RCLONE_CMD" ]] && \
