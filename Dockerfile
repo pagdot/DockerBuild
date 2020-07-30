@@ -12,7 +12,8 @@ RUN ./rclone version
 # Begin final image
 FROM lsiobase/alpine:3.11
 
-RUN apk --no-cache add ca-certificates fuse
+RUN apk --no-cache add ca-certificates fuse && \
+   sed -i 's/#user_allow_other/user_allow_other/' /etc/fuse.conf
 
 COPY --from=builder /go/rclone/rclone /usr/local/bin/
 COPY root/ /
