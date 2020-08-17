@@ -1,0 +1,17 @@
+#!/usr/bin/with-contenv bash
+umask 022
+
+[[ "${ANON_READ}" = "true" ]] && \
+	PARAMS+=("readers=(anon)")
+
+[[ -n "${USERNAME}" && -n "${PASSWORD}" ]] && \
+	PARAMS+=("username=${USERNAME}" "password=${PASSWORD}")
+
+[[ -n "${AUTH_HEADER}" ]] && \
+	PARAMS+=("authenticated-user-header=${AUTH_HEADER}")
+
+[[ -n "${CREDENTIALS_CSV}" ]] && \
+	PARAMS+=("credentials=${CREDENTIALS_CSV}")
+
+exec \
+	s6-setuidgid abc tiddlywiki /data --listen host=0.0.0.0 "${PARAMS[@]}"

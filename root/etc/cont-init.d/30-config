@@ -1,0 +1,23 @@
+#!/usr/bin/with-contenv bash
+
+# Display variables for troubleshooting
+echo -e "Variables set:\\n\
+PUID=${PUID}\\n\
+PGID=${PGID}\\n\
+TZ=${TZ}\\n\
+USERNAME=${USERNAME}\\n\
+PASSWORD=${PASSWORD//?/*}\\n\
+ANON_READ=${ANON_READ}\\n\
+AUTH_HEADER=${AUTH_HEADER}\\n\
+CREDENTIALS_CSV=${CREDENTIALS_CSV}\\n"
+
+#Create folders
+mkdir -p /config/{plugins,themes} /data
+
+#Init wiki if necessary
+[[ ! -f /data/tiddlywiki.info ]] && \
+	tiddlywiki /data --init server
+
+# permissions
+chown -R abc:abc \
+	/config /data
