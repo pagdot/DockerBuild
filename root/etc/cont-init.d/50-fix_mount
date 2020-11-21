@@ -1,0 +1,4 @@
+# check to make sure that the required variables are set
+[[ -n "$FIX_MOUNT" ]] && \
+  umount /data -q && \
+  echo "Unmounted broken mount point"

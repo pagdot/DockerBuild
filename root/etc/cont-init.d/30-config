@@ -2,12 +2,17 @@
 
 # Display variables for troubleshooting
 echo -e "Variables set:\\n\
+PGID=${PGID}\\n\
+PUID=${PUID}\\n\
 TZ=${TZ}\\n\
-RCLONE_CMD=${RCLONE_CMD}\\n"
+REMOTE_PATH=${REMOTE_PATH}\\n\
+PARAMS=${PARAMS}\\n\
+FIX_MOUNT=${FIX_MOUNT}\\n\
+"
 
 # check to make sure that the required variables are set
-[[ -z "$RCLONE_CMD" ]] && \
-  echo "Please pass your RCLONE_CMD as an environment variable in your docker run command. See docker info for more details." && \
+[[ -z "$REMOTE_PATH" ]] && \
+  echo "Please pass your source as an environment variable in your docker run command. See docker info for more details." && \
   sleep infinity
 
 # permissions

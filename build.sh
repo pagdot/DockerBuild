@@ -1,1 +1,1 @@
-docker build . -t pagdot/rclone:latest
+docker build . -t pagdot/rclone-mount:latest --build-arg "VERSION=v1.53.3"

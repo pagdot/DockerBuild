@@ -1,21 +1,24 @@
-FROM golang AS builder
+FROM lsiobase/alpine:3.11 as downloader
 
-RUN git clone https://github.com/rclone/rclone.git
-WORKDIR /go/rclone
+ARG VERSION=v1.53.3
 
-RUN make quicktest
-RUN \
-   CGO_ENABLED=0 GOOS=linux GOARCH=amd64 \
-   make
-RUN ./rclone version
+RUN apk --no-cache add ca-certificates curl unzip
 
-# Begin final image
+#Fetch and unpack
+RUN curl -O https://downloads.rclone.org/${VERSION}/rclone-${VERSION}-linux-amd64.zip && \
+   unzip rclone-${VERSION}-linux-amd64.zip
+
 FROM lsiobase/alpine:3.11
+
+ARG VERSION=v1.53.3
+
+LABEL build_version="Pagdot version: ${VERSION}"
+LABEL maintainer="pagdot"
 
 RUN apk --no-cache add ca-certificates fuse && \
    sed -i 's/#user_allow_other/user_allow_other/' /etc/fuse.conf
 
-COPY --from=builder /go/rclone/rclone /usr/local/bin/
+COPY --from=downloader rclone-${VERSION}-linux-amd64/rclone /usr/bin/rclone
 COPY root/ /
 
 VOLUME /config
