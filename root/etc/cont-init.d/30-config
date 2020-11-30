@@ -8,6 +8,7 @@ TZ=${TZ}\\n\
 REMOTE_PATH=${REMOTE_PATH}\\n\
 PARAMS=${PARAMS}\\n\
 FIX_MOUNT=${FIX_MOUNT}\\n\
+CONFIG=${CONFIG}\\n\
 "
 
 # check to make sure that the required variables are set

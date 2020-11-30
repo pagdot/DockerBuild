@@ -23,5 +23,7 @@ COPY root/ /
 
 VOLUME /config
 
+ENV CONFIG /config/rclone.conf
+
 WORKDIR /data
 ENV XDG_CONFIG_HOME=/config
