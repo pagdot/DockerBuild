@@ -1,0 +1,21 @@
+version: "3.4"
+
+services:
+  nebula:
+    image: pagdot/nebula
+    container_name: nebula
+    restart: unless-stopped
+    cap_add: ['net_admin']
+    volumes:
+      - ./config:/config
+    environment:
+      # Needs to run as root for tun interface to work
+      - PGID=0
+      - PUID=0
+      - TZ=Europe/Vienna
+      - UMASK_SET=022
+    ports:
+      - 4242:4242/udp #needed only for lighthouse
+    devices:
+      - /dev/net/tun:/dev/net/tun
+    network_mode: host
